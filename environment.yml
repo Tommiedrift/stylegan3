@@ -1,4 +1,4 @@
-name: stylegan3
+name: tommie_stylegan3_env
 channels:
   - pytorch
   - nvidia
