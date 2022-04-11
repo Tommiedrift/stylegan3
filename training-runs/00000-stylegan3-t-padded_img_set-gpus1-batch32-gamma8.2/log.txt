@@ -1,0 +1,41 @@
+Loading training set...
+
+Num images:  10398
+Image shape: [3, 1024, 1024]
+Label shape: [0]
+
+Constructing networks...
+Traceback (most recent call last):
+  File "C:\Users\tommi\Documents\Repos\stylegan3\train.py", line 286, in <module>
+    main() # pylint: disable=no-value-for-parameter
+  File "C:\ProgramData\Anaconda3\envs\tommie_stylegan3_env\lib\site-packages\click\core.py", line 1128, in __call__
+    return self.main(*args, **kwargs)
+  File "C:\ProgramData\Anaconda3\envs\tommie_stylegan3_env\lib\site-packages\click\core.py", line 1053, in main
+    rv = self.invoke(ctx)
+  File "C:\ProgramData\Anaconda3\envs\tommie_stylegan3_env\lib\site-packages\click\core.py", line 1395, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "C:\ProgramData\Anaconda3\envs\tommie_stylegan3_env\lib\site-packages\click\core.py", line 754, in invoke
+    return __callback(*args, **kwargs)
+  File "C:\Users\tommi\Documents\Repos\stylegan3\train.py", line 281, in main
+    launch_training(c=c, desc=desc, outdir=opts.outdir, dry_run=opts.dry_run)
+  File "C:\Users\tommi\Documents\Repos\stylegan3\train.py", line 96, in launch_training
+    subprocess_fn(rank=0, c=c, temp_dir=temp_dir)
+  File "C:\Users\tommi\Documents\Repos\stylegan3\train.py", line 47, in subprocess_fn
+    training_loop.training_loop(rank=rank, **c)
+  File "C:\Users\tommi\Documents\Repos\stylegan3\training\training_loop.py", line 152, in training_loop
+    G = dnnlib.util.construct_class_by_name(**G_kwargs, **common_kwargs).train().requires_grad_(False).to(device) # subclass of torch.nn.Module
+  File "C:\ProgramData\Anaconda3\envs\tommie_stylegan3_env\lib\site-packages\torch\nn\modules\module.py", line 852, in to
+    return self._apply(convert)
+  File "C:\ProgramData\Anaconda3\envs\tommie_stylegan3_env\lib\site-packages\torch\nn\modules\module.py", line 530, in _apply
+    module._apply(fn)
+  File "C:\ProgramData\Anaconda3\envs\tommie_stylegan3_env\lib\site-packages\torch\nn\modules\module.py", line 530, in _apply
+    module._apply(fn)
+  File "C:\ProgramData\Anaconda3\envs\tommie_stylegan3_env\lib\site-packages\torch\nn\modules\module.py", line 530, in _apply
+    module._apply(fn)
+  File "C:\ProgramData\Anaconda3\envs\tommie_stylegan3_env\lib\site-packages\torch\nn\modules\module.py", line 552, in _apply
+    param_applied = fn(param)
+  File "C:\ProgramData\Anaconda3\envs\tommie_stylegan3_env\lib\site-packages\torch\nn\modules\module.py", line 850, in convert
+    return t.to(device, dtype if t.is_floating_point() or t.is_complex() else None, non_blocking)
+  File "C:\ProgramData\Anaconda3\envs\tommie_stylegan3_env\lib\site-packages\torch\cuda\__init__.py", line 166, in _lazy_init
+    raise AssertionError("Torch not compiled with CUDA enabled")
+AssertionError: Torch not compiled with CUDA enabled

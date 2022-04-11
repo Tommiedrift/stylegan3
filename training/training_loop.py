@@ -353,6 +353,9 @@ def training_loop(
             images = torch.cat([G_ema(z=z, c=c, noise_mode='const').cpu() for z, c in zip(grid_z, grid_c)]).numpy()
             save_image_grid(images, os.path.join(run_dir, f'fakes{cur_nimg//1000:06d}.png'), drange=[-1,1], grid_size=grid_size)
 
+        # Save pth generator file.
+        snapshot_pth = os.path.join(run_dir, f'network-snapshot-{cur_nimg//1000:06d}.pth')
+        torch.save(G.state_dict(), snapshot_pth)
         # Save network snapshot.
         snapshot_pkl = None
         snapshot_data = None
