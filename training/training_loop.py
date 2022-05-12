@@ -353,10 +353,16 @@ def training_loop(
             images = torch.cat([G_ema(z=z, c=c, noise_mode='const').cpu() for z, c in zip(grid_z, grid_c)]).numpy()
             save_image_grid(images, os.path.join(run_dir, f'fakes{cur_nimg//1000:06d}.png'), drange=[-1,1], grid_size=grid_size)
 
+        # Save pth generator file.
+        
         # Save network snapshot.
         snapshot_pkl = None
         snapshot_data = None
         if (network_snapshot_ticks is not None) and (done or cur_tick % network_snapshot_ticks == 0):
+            snapshotG_pth = os.path.join(run_dir, f'generator-weights-{cur_nimg//1000:06d}.pth')
+            snapshotG_ema_pth = os.path.join(run_dir, f'generator_ema-weights-{cur_nimg//1000:06d}.pth')
+            torch.save(G.state_dict(), snapshotG_pth)
+            torch.save(G_ema.state_dict(), snapshotG_ema_pth)
             snapshot_data = dict(G=G, D=D, G_ema=G_ema, augment_pipe=augment_pipe, training_set_kwargs=dict(training_set_kwargs))
             for key, value in snapshot_data.items():
                 if isinstance(value, torch.nn.Module):
