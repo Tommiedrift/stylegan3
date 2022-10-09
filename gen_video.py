@@ -7,7 +7,7 @@
 # license agreement from NVIDIA CORPORATION is strictly prohibited.
 
 """Generate lerp videos using pretrained network pickle."""
-
+import PIL.Image
 import copy
 import os
 import re
@@ -61,15 +61,18 @@ def gen_interp_video(G, mp4: str, seeds, shuffle_seed=None, w_frames=60*4, kind=
         rng.shuffle(all_seeds)
 
     zs = torch.from_numpy(np.stack([np.random.RandomState(seed).randn(G.z_dim) for seed in all_seeds])).to(device)
+    #print(zs)
     ws = G.mapping(z=zs, c=None, truncation_psi=psi)
-    _ = G.synthesis(ws[:1]) # warm up
+    #print(ws)
+    #_ = G.synthesis(ws[:1]) # warm up
     ws = ws.reshape(grid_h, grid_w, num_keyframes, *ws.shape[1:])
-
+    print(ws.shape)
     # Interpolation.
     grid = []
     for yi in range(grid_h):
         row = []
         for xi in range(grid_w):
+            #print("wraps", wraps)
             x = np.arange(-num_keyframes * wraps, num_keyframes * (wraps + 1))
             y = np.tile(ws[yi][xi].cpu().numpy(), [wraps * 2 + 1, 1, 1])
             interp = scipy.interpolate.interp1d(x, y, kind=kind, axis=0)
@@ -83,9 +86,19 @@ def gen_interp_video(G, mp4: str, seeds, shuffle_seed=None, w_frames=60*4, kind=
         for yi in range(grid_h):
             for xi in range(grid_w):
                 interp = grid[yi][xi]
+                #print(grid[yi][xi])
                 w = torch.from_numpy(interp(frame_idx / w_frames)).to(device)
-                img = G.synthesis(ws=w.unsqueeze(0), noise_mode=noise_mode)[0]
+                #print(w)
+                #w = torch.ones(16, 512).cuda()
+                #print(w)
+                #print(w.shape)
+                img = G.synthesis(w.unsqueeze(0), noise_mode=noise_mode)[0]
+                #img = (img.permute(1, 2, 0) * 127.5 + 128).clamp(0, 255).to(torch.uint8)
+                #print(img)
+                #np.savetxt("/dataB1/tommie/generated/images/test/" + str(frame_idx) + ".txt", img.cpu().numpy())
                 imgs.append(img)
+                #PIL.Image.fromarray(img.cpu().numpy(), 'RGB').save("/dataB1/tommie/generated/images/test/" + str(frame_idx) + ".png")
+                #imageio.imwrite("/dataB1/tommie/generated/images/test/" + str(frame_idx) + ".png", img.cpu())
         video_out.append_data(layout_grid(torch.stack(imgs), grid_w=grid_w, grid_h=grid_h))
     video_out.close()
 
